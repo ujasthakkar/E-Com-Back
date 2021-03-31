@@ -1,4 +1,5 @@
 require('dotenv').config()
+const port = process.env.PORT || 4001;
 
 const mongoose = require('mongoose');
 const express = require("express");
@@ -8,7 +9,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const User = require("./models/user");
-
+const products = require("./models/product.js");
+const orders = require("./models/order.js");
 
 
 
@@ -34,7 +36,7 @@ app.use(cors());
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 
-const port = process.env.PORT || 4001;
+
 
 
 
