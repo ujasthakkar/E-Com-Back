@@ -57,6 +57,14 @@ exports.isSignedIn = expressJwt({
     algorithms: ['HS256'],
     userProperty: "auth"
 });
+
+/*exports.isretailer = (req,res,next) => {
+    const role = req.body.role;
+    if(role)
+        return next();
+    else    
+        return res.send({ msg: 'you are not a retailer'});
+};*/
   
 
 

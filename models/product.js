@@ -18,6 +18,7 @@ var productSchema = new mongoose.Schema({
     },
 
     cat: {
+        type: String,
         enum: ["men", "women", "kids"],
     },
 
@@ -26,6 +27,7 @@ var productSchema = new mongoose.Schema({
     },
 
     size: {
+        type: String,
         enum: ["S", "M", "L", "XL"],
     },
 
