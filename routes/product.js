@@ -89,7 +89,7 @@ router.post('/', /*, issignedin, isretailer,*/ async (req,res) => {
         quantity: req.body.quantity,
         price: req.body.price,
         dispercent: req.body.dispercent,
-        tags: req.body.tag
+        tags: req.body.tags
     });
     
     try{

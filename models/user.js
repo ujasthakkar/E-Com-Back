@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 const crypto = require('crypto');
-//const uuidv1 = require('uuid/v1');
+
   
 
 
@@ -46,6 +46,11 @@ const crypto = require('crypto');
         type: Array,
         default: []
     },
+
+    cart:{
+        type:Array,
+        default:[]
+    }
     
   },
   {timestamps: true}
