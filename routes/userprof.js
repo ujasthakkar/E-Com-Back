@@ -133,6 +133,56 @@ router.get('/removefromCart/:id/:productId',  async(req, res) => {
 //606dd40ab38a536484f062db
 //6066f41789350f21e06b0440
 
+router.get('/purchase/:id', async(req, res) => {
+
+    const userInfo = await users.findOne({ _id: req.params.id});
+        
+     
+            
+            users.findOneAndUpdate(
+                {_id:req.params.id},
+                {
+
+                    $push:
+                    {
+                        purchases:
+                        {
+                            "$each":userInfo.cart
+                        }
+                    },
+                    $set: 
+                    { 
+                         cart: [] 
+                    }
+                    
+                },
+                {new:true},
+                (err, userInfo) => {
+                    if (err) return res.json({ success: false, err });
+                    res.status(200).json(userInfo.purchases)
+                }
+
+            )
+});
+
+router.get('/resetpurchase/:id',  async(req, res) => {
+
+        users.findOneAndUpdate(
+                { _id: req.params.id },
+                {
+                    
+                    $set: 
+                    { 
+                        purchases: [] 
+                    }
+                },
+                { new: true },
+                (err, userInfo) => {
+                    if (err) return res.json({ success: false, err });
+                    res.status(200).json(userInfo.purchases)
+                }
+            )
+});
 
 
 
