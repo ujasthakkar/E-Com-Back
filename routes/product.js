@@ -12,28 +12,48 @@ const router = express.Router();
 
 router.get("/search", async (req, res) => {
     try {
-        let result = await movies.aggregate([
+        let result = await products.aggregate([
             {
                 "$search": {
                     "text": {
                         "query": `${req.body.search}`,
-                        "path": "plot",
+                        "path": "des",
                         "fuzzy": {
                             "maxEdits": 2
                         }
                     },
                     "highlight": {
-                        "path": "plot"
+                        "path": "des"
                     }
                 }
             },
-        ]).toArray();
+        ]);
+        // console.log(result);
         res.json(result);
     } catch (e) {
         res.status(500).send({ message: e.message });
     }
 });
 
+router.get('/', async (req,res) => {
+
+    try{
+        // console.log(req.body);
+        if(req.body.cat!=null){
+            product = await products.find({ cat: req.body.cat});
+        }
+        else if(req.body.brandname!=null){
+            product = await products.find({ brandname: req.body.brandname});
+        }
+        else if(req.body.title!=null){
+            product = await products.find({ title: req.body.title});
+        }
+        res.json(product);
+    }catch(err){
+        res.json({ msg: 'Product not found' });
+    }
+
+});
 
 router.get('/:id', async (req,res) => {
 
