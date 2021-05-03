@@ -10,13 +10,15 @@ const products = require('../models/product');
 
 const router = express.Router();
 
-router.get("/search", async (req, res) => {
+router.get("/search/:item", async (req, res) => {
     try {
+        console.log(req.params.item);
+        console.log(req.body);
         let result = await products.aggregate([
             {
                 "$search": {
                     "text": {
-                        "query": `${req.body.search}`,
+                        "query": `${req.params.item}`,
                         "path": "des",
                         "fuzzy": {
                             "maxEdits": 2
@@ -28,17 +30,17 @@ router.get("/search", async (req, res) => {
                 }
             },
         ]);
-        // console.log(result);
+        //console.log(result);
         res.json(result);
     } catch (e) {
         res.status(500).send({ message: e.message });
     }
 });
 
-router.get('/', async (req,res) => {
-
+router.get('/shop', async (req,res) => {
+    
     try{
-        // console.log(req.body);
+        console.log(req.body.cat);
         if(req.body.cat!=null){
             product = await products.find({ cat: req.body.cat});
         }
@@ -66,6 +68,14 @@ router.get('/:id', async (req,res) => {
 
 });
 
+router.get('/', async (req,res) => {
+    try{
+        const product = await products.find();
+        res.json(product);
+    }catch(err){
+        res.json({ msg: err})
+    }
+});
 
 router.put('/:id', /*, issignedin, isretailer,*/ async (req,res) =>{
 
@@ -139,12 +149,53 @@ router.post('/', /*, issignedin, isretailer,*/ async (req,res) => {
     try{
         const addedproduct = await product.save();
         res.send({message: 'product added', data: addedproduct});
-    }catch(err){
-        res.status(500).send({ msg: 'Error in adding product' });
+    }catch(err) {
+        if(err.name === "MongoError" && "keyValue" in err && "username" in err.keyValue) {
+           return res.status(409).send({message: "User already exists"})
+        }
+        else {
+          return res.status(500).send(err)
+        }
     }
 
 });
 
+// shopy by cat
+router.get('/cat/:shopby', async (req,res) => {
 
+    try{
+        const product = await products.find({ cat: req.params.shopby});
+        res.json(product);
+    }catch(err){
+        res.json({ msg: 'Product not found' });
+    }
+
+});
+
+// shopy by brandname
+router.get('/brand/:shopby', async (req,res) => {
+
+    try{
+        console.log(req.params);
+        const product = await products.find({ brandname: req.params.shopby});
+        console.log(product);
+        res.json(product);
+    }catch(err){
+        res.json({ msg: 'Product not found' });
+    }
+
+});
+
+// shopy by product
+router.get('/product/:shopby', async (req,res) => {
+
+    try{
+        const product = await products.find({ tags: req.params.shopby});
+        res.json(product);
+    }catch(err){
+        res.json({ msg: 'Product not found' });
+    }
+
+});
 
 module.exports = router;

@@ -63,7 +63,7 @@ router.delete('/:id', /*, issignedin, isretailer,*/ async (req,res) =>{
 });
 
 
-router.get('/addtocart/:id/:productId',  async(req, res) => {
+router.post('/addtocart/:id/:productId',  async(req, res) => {
 
     const userInfo = await users.findOne({ _id: req.params.id});
     const productInfo = await products.findOne({ _id: req.params.productId});
@@ -79,7 +79,7 @@ router.get('/addtocart/:id/:productId',  async(req, res) => {
         if (duplicate) {
             users.findOneAndUpdate(
                 { _id: req.params.id, "cart.id": req.params.productId },
-                { $inc: { "cart.$.quantity": 1 } },
+                { $inc: { "cart.$.quan": 1 } },
                  { new: true },
                 (err, userInfo) => {
                     if (err) return res.json({ success: false, err });
@@ -97,7 +97,7 @@ router.get('/addtocart/:id/:productId',  async(req, res) => {
                         cart: {
                             id: req.params.productId,
                             product:productInfo,
-                            quantity: 1,
+                            quan: 1,
                             date: Date.now()
                         }
                     }
@@ -111,6 +111,26 @@ router.get('/addtocart/:id/:productId',  async(req, res) => {
             
         }
     
+});
+
+router.get('/mycart/:id', async(req,res) => {
+
+    const userInfo = await users.findOne({ _id: req.params.id});
+    if(userInfo){
+        const mycart = userInfo.cart;
+        if(mycart!=null){
+            return res.json(mycart);
+            console.log(mycart);
+        }
+        else{
+            return res.json({ msg: 'cart is empty' });
+            console.log({msg: 'cart is empty'});
+        }
+    }
+    else{
+        return res.json({msg: 'user not found'});
+        console.log({msg: "cart is empty"});
+    }
 });
 
 router.get('/removefromCart/:id/:productId',  async(req, res) => {
