@@ -49,6 +49,26 @@ router.get('/addtofav/:id/:productId',  async(req, res) => {
     
 });
 
+router.get('/myfav/:id', async(req,res) => {
+
+    const userInfo = await users.findOne({ _id: req.params.id});
+    if(userInfo){
+        const myfav = userInfo.fav;
+        if(myfav!=null){
+            return res.json(myfav);
+            console.log(myfav);
+        }
+        else{
+            return res.json({ msg: 'fav is empty' });
+            console.log({msg: 'fav is empty'});
+        }
+    }
+    else{
+        return res.json({msg: 'user not found'});
+        console.log({msg: "fav is empty"});
+    }
+});
+
 router.get('/removefromfav/:id/:productId',  async(req, res) => {
     
     users.findOneAndUpdate(
