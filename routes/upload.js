@@ -1,7 +1,7 @@
 const router=require('express').Router();
 const cloudinary=require('cloudinary');
 //const fileUpload = require('express-fileupload');
-const formidable  = require('formidable');
+//const formidable  = require('formidable');
 const Product=require('../models/product')
 const fs=require('fs');
 const path=require('path')
@@ -14,10 +14,10 @@ cloudinary.config({
     api_secret:process.env.CLOUD_API_SECRET
 })
 
-router.post('/upload', (req, res) =>{
+router.post('/upload/:id', (req, res) =>{
     try {
 
-        console.log(req.files);
+        //console.log(req.files);
 
         //res.send("HELlo");
 
@@ -26,19 +26,26 @@ router.post('/upload', (req, res) =>{
 
         const file = req.files.file;
         if(file.size > 1024*1024) {
-           removeTmp(file.tempFilePath)
+           //removeTmp(file.tempFilePath)
             return res.status(400).json({msg: "Size too large"})
         }
         if(file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/png'){
-            removeTmp(file.tempFilePath)
+            //removeTmp(file.tempFilePath)
             return res.status(400).json({msg: "File format is incorrect."})
         }
+        
         
         cloudinary.v2.uploader.upload(file.tempFilePath, {folder: "test"}, async(err, result)=>{
             if(err) throw err;
 
-            removeTmp(file.tempFilePath)
-
+            //removeTmp(file.tempFilePath)
+            
+            const product = await Product.findOne({ _id: req.params.id});
+            console.log(product);
+            product.imageurl = result.secure_url;
+            product.imageid = result.public_id;
+            product.save();
+            console.log(product.imageurl);
             res.json({public_id: result.public_id, url: result.secure_url})
         }) 
         //res.send("HELlo");

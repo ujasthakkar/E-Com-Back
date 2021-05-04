@@ -7,7 +7,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const User = require("./models/user");
 const Product = require("./models/product");
+const fileUpload = require('express-fileupload');
 
+app.use(fileUpload({
+    useTempFiles : true,
+    //tempFileDir : '/tmp/'
+}));
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");

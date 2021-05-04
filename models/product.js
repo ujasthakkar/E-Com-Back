@@ -50,6 +50,15 @@ var productSchema = new mongoose.Schema({
         type: Array,
         default: [],
         required: true
+    },
+
+    imageurl:{
+        type: String
+        
+    },
+    
+    imageid:{
+        type:String
     }
 });
 
